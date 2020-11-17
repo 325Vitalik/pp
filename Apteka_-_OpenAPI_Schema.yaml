@@ -1,0 +1,502 @@
+openapi: 3.0.3
+info:
+  title: Pharmacy service
+  description: Service to buy medicine and to control the stock.
+  version: 1.0.0
+  license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://pharmacy.swagger.io
+tags:
+- name: User
+  description: Operations about user
+- name: Medicine
+  description: Access to Medicine stock
+- name: Buy
+  description: Buy medicine
+- name: Demand
+  description: post to Demand orders
+paths:
+  /user:
+    post:
+      tags:
+        - User 
+      description: Operations about user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_user'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Invalid body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '409':
+          description: User with such email already exists
+      security:
+      - medicine_auth:
+        - write:user
+        - read:user
+  /user/provisor:
+    post:
+      tags:
+        - User
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_user'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Invalid body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '409':
+          description: User with such email already exists
+      security:
+      - medicine_auth:
+        - write:user
+        - read:user
+        - write:admin
+        - read:admin
+  '/user/{userId}':
+    get:
+      tags:
+        - User
+      description: Get user data
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Invalid Id supplied
+        '404':
+          description: User not found
+      security:
+      - medicine_auth:
+        - read:user
+    put:
+      tags:
+        - User
+      description: Update user data
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_user'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Invalid body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '401':
+          description: User is not authorized
+        '404':
+          description: User not found
+      security:
+      - medicine_auth:
+        - write:user
+        - read:user
+  /medicine:
+    post:
+      tags:
+        - Medicine
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_medicine'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medicine'
+        '400':
+          description: Invalid body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '401':
+          description: User is not authorized
+        '403':
+          description: Only Admin can do that
+      security:
+      - medicine_auth:
+        - write:medicine
+        - write:admin
+        - read:admin
+    get:
+      tags:
+        - Medicine
+      description: 'Gets all drugs:)'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/medicine'
+                nullable: false
+        '400':
+          description: Invalid Id supplied
+        '404':
+          description: Medicine not found
+      security:
+      - medicine_auth:
+        - read:medicine
+        
+  '/medicine/{medicineId}':
+    get:
+      tags:
+        - Medicine
+      description: Gets medicine by id
+      parameters:
+        - name: medicineId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medicine'
+        '400':
+          description: Invalid Id or Body supplied
+        '404':
+          description: Medicine not found
+      security:
+      - medicine_auth:
+        - read:medicine
+    put:
+      tags:
+        - Medicine
+      description: Updates medicine
+      parameters:
+        - name: medicineId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_medicine'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medicine'
+        '400':
+          description: Invalid Id or Body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '401':
+          description: User is not authorized
+        '403':
+          description: Only Admin can do that
+        '404':
+          description: Medicine not found
+      security:
+      - medicine_auth:
+        - write:medicine
+        - read:medicine
+        - write:admin
+        - read:admin
+    delete:
+      tags:
+        - Medicine
+      description: Deletes medicine
+      parameters:
+        - name: medicineId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Invalid Id or Body supplied
+        '403':
+          description: Only Admin can do that
+        '404':
+          description: Medicine not found
+      security:
+        - medicine_auth:
+          - write:medicine
+          - read:medicine
+          - write:admin
+          - read:admin
+  /buy:
+    post:
+      tags:
+        - Buy
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_buy'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/buy'
+        '400':
+          description: Invalid Id or Body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '401':
+          description: User is not authorized
+        '404':
+          description: Medicine not found
+      security:
+      - medicine_auth:
+        - write:medicine
+        - read:medicine
+        - read:user
+  /demand:
+    post:
+      tags:
+        - Demand
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_demand'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/demand'
+        '400':
+          description: Invalid Id or Body supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                nullable: false
+        '401':
+          description: User is not authorized
+      security:
+      - medicine_auth:
+        - write:medicine
+        - read:medicine
+        - read:user
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birthday:
+          type: string
+          format: date
+        email:
+          type: string
+          example: exampke@sth.com
+        phone_number:
+          type: string
+          example: '+380955552233'
+        role:
+          type: string
+      nullable: false
+    medicine:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        amount:
+          type: integer
+          format: int64
+      nullable: false
+    buy:
+      type: object
+      properties:
+        user_id:
+          type: string
+        medicine_id:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        id:
+          type: string
+      nullable: false
+    demand:
+      type: object
+      properties:
+        user_id:
+          type: string
+        medicine_id:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        id:
+          type: string
+      nullable: false
+    create_user:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birthday:
+          type: string
+          format: date
+        email:
+          type: string
+          example: exampke@sth.com
+        phone_number:
+          type: string
+          example: '+380955552233'
+      nullable: false
+    create_medicine:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        amount:
+          type: integer
+          format: int64
+      nullable: false
+    create_buy:
+      type: object
+      properties:
+        user_id:
+          type: string
+        medicine_id:
+          type: string
+        amount:
+          type: integer
+          format: int64
+      nullable: false
+    create_demand:
+      type: object
+      properties:
+        user_id:
+          type: string
+        medicine_id:
+          type: string
+        amount:
+          type: integer
+          format: int64
+      nullable: false
+  securitySchemes:
+    medicine_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://medicine.swagger.io/oauth/dialog
+          scopes:
+            write:medicine: modify medicine in your account
+            read:medicine: read your medicine
+            write:user: modify user in your account
+            read:user: read your users
+            write:admin: modify other users by your account or use admin stuff
+            read:admin: read your users

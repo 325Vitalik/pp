@@ -39,3 +39,5 @@ MANIFEST.in
 pip-wheel-metadata
 /poetry.toml
 poetry.lock
+
+.env

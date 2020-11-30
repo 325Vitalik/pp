@@ -8,6 +8,12 @@ authors = ["Vitalii Yarmus"]
 python = "3.7.7"
 Flask = "^1.1.2"
 python-dotenv = "^0.15.0"
+alembic = "^1.4.3"
+Flask-SQLAlchemy = "^2.4.4"
+Flask-Script = "^2.0.6"
+Flask-Migrate = "^2.5.3"
+SQLAlchemy-Utils = "^0.36.8"
+PyMySQL = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 

@@ -111,46 +111,6 @@ paths:
       security:
       - medicine_auth:
         - read:user
-    put:
-      tags:
-        - User
-      description: Update user data
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/create_user'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/user'
-        '400':
-          description: Invalid body supplied
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                nullable: false
-        '401':
-          description: User is not authorized
-        '404':
-          description: User not found
-      security:
-      - medicine_auth:
-        - write:user
-        - read:user
   /medicine:
     post:
       tags:
@@ -413,28 +373,36 @@ components:
     buy:
       type: object
       properties:
+        id:
+          type: string
         user_id:
           type: string
+        user:
+          $ref: '#/components/schemas/user'
         medicine_id:
           type: string
+        medicine:
+          $ref: '#/components/schemas/medicine'
         amount:
           type: integer
           format: int64
-        id:
-          type: string
       nullable: false
     demand:
       type: object
       properties:
+        id:
+          type: string
         user_id:
           type: string
+        user:
+          $ref: '#/components/schemas/user'
         medicine_id:
           type: string
+        medicine:
+          $ref: '#/components/schemas/medicine'
         amount:
           type: integer
           format: int64
-        id:
-          type: string
       nullable: false
     create_user:
       type: object
@@ -452,6 +420,8 @@ components:
         phone_number:
           type: string
           example: '+380955552233'
+        password:
+          type: string
       nullable: false
     create_medicine:
       type: object

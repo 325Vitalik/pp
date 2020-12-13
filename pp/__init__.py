@@ -1,17 +1,16 @@
 __version__ = '0.1.0'
-from flask import Flask
-from wsgiref.simple_server import make_server
+from config import *
 
-app = Flask(__name__)
+db.create_all()
+
+from controllers.user_controller import *
+from controllers.medicine_controller import *
+from controllers.buy_controller import *
+from controllers.demand_controller import *
 
 @app.route('/')
 def init():
     return 'It\'s ALIVE!!!'
 
-@app.route('/api/v1/hello-world-31')
-def hello_world():
-    return 'Hello World 31'
-
-server = make_server('', 3000, app)
-print('Server is running on http://localhost:3000')
-server.serve_forever()
+if __name__ == '__main__':
+    app.run()

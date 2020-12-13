@@ -2,7 +2,7 @@ CREATE DATABASE Pharmacy;
 
 CREATE TABLE Pharmacy.user (
   first_name LONGTEXT NOT NULL,
-  second_name LONGTEXT,
+  last_name LONGTEXT,
   id NVARCHAR(36) PRIMARY KEY NOT NULL,
   birthday DATE,
   email NVARCHAR(365) NOT NULL,

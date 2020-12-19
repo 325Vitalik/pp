@@ -6,6 +6,7 @@ import json
 import re
 
 @app.route('/medicine', methods=['POST'])
+@auth.login_required(role="provisor")
 def create_medicine():
     if not request.is_json:
         return jsonify({"message": "Body is required"}), 400
@@ -48,6 +49,7 @@ def get_by_id(medicine_id):
         return jsonify({"message": str(err)}), 404
 
 @app.route('/medicine/<medicine_id>', methods=['PUT'])
+@auth.login_required(role="provisor")
 def update(medicine_id):
     regex = re.compile('[\w]{8}(-[\w]{4}){3}-[\w]{12}\Z')
     is_correct_id = regex.match(medicine_id)
@@ -63,6 +65,7 @@ def update(medicine_id):
         return jsonify({"message": str(err)}), 404
 
 @app.route('/medicine/<medicine_id>', methods=['DELETE'])
+@auth.login_required(role="provisor")
 def delete(medicine_id):
     regex = re.compile('[\w]{8}(-[\w]{4}){3}-[\w]{12}\Z')
     is_correct_id = regex.match(medicine_id)

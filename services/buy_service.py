@@ -27,7 +27,7 @@ def add_buy(request):
     if not inputs.validate():
         raise ValueError('Not valid')
 
-    buy = Buy(**request.json)
+    buy = Buy(**request.json, user_id=auth.current_user().id)
 
     user = User.query.filter_by(id=buy.user_id).first()
     if user == None:

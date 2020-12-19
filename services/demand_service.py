@@ -27,7 +27,7 @@ def add_demand(request):
     if not inputs.validate():
         raise ValueError('Not valid')
 
-    demand = Demand(**request.json)
+    demand = Demand(**request.json, user_id=auth.current_user().id)
 
     user = User.query.filter_by(id=demand.user_id).first()
     if user == None:

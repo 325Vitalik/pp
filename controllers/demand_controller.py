@@ -1,5 +1,6 @@
 from services.demand_service import *
 from config import *
+from exceptions.errors import *
 
 @app.route('/demand', methods=['POST'])
 def create_demand():
@@ -12,3 +13,5 @@ def create_demand():
         return jsonify(demand), 201
     except ValueError as err:
         return jsonify({"message": str(err)}), 400
+    except NotFoundError as err:
+        return jsonify({"message": str(err)}), 404

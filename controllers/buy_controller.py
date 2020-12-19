@@ -1,5 +1,6 @@
 from services.buy_service import *
 from config import *
+from exceptions.errors import *
 
 @app.route('/buy', methods=['POST'])
 def create_buy():
@@ -12,3 +13,5 @@ def create_buy():
         return jsonify(buy), 201
     except ValueError as err:
         return jsonify({"message": str(err)}), 400
+    except NotFoundError as err:
+        return jsonify({"message": str(err)}), 404

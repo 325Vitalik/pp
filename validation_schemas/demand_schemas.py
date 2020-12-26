@@ -1,5 +1,5 @@
 create_demand_schema = {
-	"$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
     "type": "object",
     "additionalProperties": False,
     "required": ["medicine_id", "amount"],

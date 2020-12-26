@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
+from flask_httpauth import HTTPBasicAuth
+auth = HTTPBasicAuth()
 import os
 
 app = Flask(__name__)

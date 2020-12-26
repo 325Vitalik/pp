@@ -37,6 +37,7 @@ def create_user_provisor():
 
     return jsonify(user), 201
 
+
 @app.route('/user/<user_id>', methods=['GET'])
 def get_user_by_id(user_id):
 

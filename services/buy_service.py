@@ -40,8 +40,8 @@ def add_buy(request):
     if medicine.amount < buy.amount:
         raise NotFoundError('Medicines are not enough')
 
-    session = Session()
-    session.add(buy)
-    session.commit()
+    #session = Session()
+    db.session.add(buy)
+    db.session.commit()
 
     return get_serializable_buy(buy, user, medicine)

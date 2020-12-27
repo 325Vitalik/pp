@@ -34,9 +34,9 @@ def add_user(request, role='user'):
 
     user = User(**request.json, role=role)
     user.password = encrypt_password(user.password)
-    session = Session()
-    session.add(user)
-    session.commit()
+    #session = Session()
+    db.session.add(user)
+    db.session.commit()
 
     return get_serializable_user(user)
 

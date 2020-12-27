@@ -1,5 +1,5 @@
 create_user_schema = {
-	"$schema": "https://json-schema.org/draft/2019-09/schema",
+	"$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "required": ["first_name", "last_name", "email", "password"],
     "additionalProperties": False,

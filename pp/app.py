@@ -10,7 +10,7 @@ from controllers.demand_controller import *
 
 @app.route('/')
 def init():
-    return 'It\'s ALIVE!!!'
+    return 'It lives'
 
 @auth.verify_password
 def verify_password(username, password):

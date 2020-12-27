@@ -12,4 +12,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = URL = os.getenv("URL")
 db = SQLAlchemy(app)
 engine = db.engine
 Base = db.Model
-Session = sessionmaker(bind=engine)
+#Session = sessionmaker(bind=engine)

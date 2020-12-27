@@ -20,6 +20,10 @@ jsonschema = "^3.2.0"
 passlib = "^1.7.4"
 Flask-HTTPAuth = "^4.2.0"
 mysql-connector-python = "^8.0.22"
+Flask-JWT-Extended = "^3.25.0"
+urllib3 = "^1.26.2"
+Flask-Testing = "^0.8.1"
+coverage = "^5.3.1"
 
 [tool.poetry.dev-dependencies]
 

@@ -25,9 +25,9 @@ def add_medicine(request):
         raise ValueError('Not valid')
 
     medicine = Medicine(**request.json)
-    session = Session()
-    session.add(medicine)
-    session.commit()
+    #session = Session()
+    db.session.add(medicine)
+    db.session.commit()
 
     return get_serializable_medicine(medicine)
 

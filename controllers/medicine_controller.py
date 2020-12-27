@@ -17,8 +17,6 @@ def create_medicine():
         medicine = add_medicine(request)
     except ValueError as err:
         return jsonify({"message": str(err)}), 400
-    except ItemAlreadyExistsError as err:
-        return jsonify({"messgae": str(err)}), 409
 
     return jsonify(medicine), 201
 

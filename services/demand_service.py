@@ -37,8 +37,8 @@ def add_demand(request):
     if medicine == None:
         raise NotFoundError('Medicine with id: ' + medicine_id + ' not found')
 
-    session = Session()
-    session.add(demand)
-    session.commit()
+    #session = Session()
+    db.ession.add(demand)
+    db.ession.commit()
 
     return get_serializable_demand(demand, user, medicine)

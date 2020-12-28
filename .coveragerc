@@ -1,0 +1,22 @@
+[run]
+branch = True
+source =
+    .
+omit =
+    test1.py
+    test.py
+    config.py
+    tests/*
+    alembic/*
+    validation_schemas/*
+    repository/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+
+    def repr
+    if self.debug
+
+    if 0:
+    if name == .main.:

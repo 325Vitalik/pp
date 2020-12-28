@@ -11,14 +11,12 @@ def create_user():
         return jsonify({"message": "Body is required"}), 400
 
     user = None
-
     try:
         user = add_user(request)
     except ValueError as err:
         return jsonify({"message": str(err)}), 400
     except ItemAlreadyExistsError as err:
         return jsonify({"messgae": str(err)}), 409
-
     return jsonify(user), 201
 
 @app.route('/user/provisor', methods=['POST'])

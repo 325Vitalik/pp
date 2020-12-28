@@ -23,7 +23,7 @@ pip-log.txt
 .python-version
 .vscode/*
 
-/test.py
+/test1.py
 /test_*.*
 
 /setup.cfg

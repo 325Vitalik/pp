@@ -31,11 +31,11 @@ def add_buy(request):
 
     user = User.query.filter_by(id=buy.user_id).first()
     if user == None:
-        raise NotFoundError('User with id: ' + user_id + ' not found')
+        raise NotFoundError('User with id: ' + buy.user_id + ' not found')
 
     medicine = Medicine.query.filter_by(id=buy.medicine_id).first()
     if medicine == None:
-        raise NotFoundError('Medicine with id: ' + medicine_id + ' not found')
+        raise NotFoundError('Medicine with id: ' + buy.medicine_id + ' not found')
 
     if medicine.amount < buy.amount:
         raise NotFoundError('Medicines are not enough')

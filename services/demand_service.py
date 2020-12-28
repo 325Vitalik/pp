@@ -31,14 +31,14 @@ def add_demand(request):
 
     user = User.query.filter_by(id=demand.user_id).first()
     if user == None:
-        raise NotFoundError('User with id: ' + user_id + ' not found')
+        raise NotFoundError('User with id: ' + demand.user_id + ' not found')
 
     medicine = Medicine.query.filter_by(id=demand.medicine_id).first()
     if medicine == None:
-        raise NotFoundError('Medicine with id: ' + medicine_id + ' not found')
+        raise NotFoundError('Medicine with id: ' + demand.medicine_id + ' not found')
 
     #session = Session()
-    db.ession.add(demand)
-    db.ession.commit()
+    db.session.add(demand)
+    db.session.commit()
 
     return get_serializable_demand(demand, user, medicine)

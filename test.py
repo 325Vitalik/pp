@@ -2,7 +2,7 @@ import unittest
 import json
 import urllib3
 from flask_testing import TestCase
-from pp.app import *
+from pp import *
 import base64
 
 
@@ -19,6 +19,25 @@ class MyTest(unittest.TestCase):
         db.session.commit()
         db.drop_all()
 
+    def test_provisor_post(self):
+
+        client=app.test_client()
+
+        response = client.post(
+            '/user/provisor',
+            data=json.dumps({
+                "first_name": "Vitaliko",
+                "last_name": "Yarmusko",
+                "email": "qwerty129@gmail.comko",
+                "password": "qwertyOpko"
+                }).encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+        self.assertEqual(response.status_code, 201)
+
+        json_token= response.data.decode('utf8').replace("'",'"')
+        return json.loads(json_token).get('id')
+
     def test_user_post(self):
 
         client=app.test_client()
@@ -26,11 +45,9 @@ class MyTest(unittest.TestCase):
         response = client.post(
             '/user',
             data=json.dumps({
-                "first_name": "Vitalii",
+                "first_name": "Vitali",
                 "last_name": "Yarmus",
-                "birthday": "2002-11-13",
                 "email": "qwerty129@gmail.com",
-                "phone_number": "+380983057271",
                 "password": "qwertyOp"
                 }).encode('utf-8'),
             headers={'Content-Type': 'application/json'}
@@ -44,7 +61,20 @@ class MyTest(unittest.TestCase):
 
         client=app.test_client()
 
-        user_id = self.test_user_post()
+        response = client.post(
+            '/user',
+            data=json.dumps({
+                "first_name": "Vitalii",
+                "last_name": "Yarmus",
+                "email": "qwerty129@gmail.com",
+                "password": "qwertyOp"
+                }).encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+        self.assertEqual(response.status_code, 201)
+
+        json_token= response.data.decode('utf8').replace("'",'"')
+        user_id = json.loads(json_token).get('id')
         response = client.get('/user/'+user_id)
         self.assertEqual(response.status_code, 200)
 
@@ -114,6 +144,8 @@ class MyTest(unittest.TestCase):
 
         client=app.test_client()
 
+        provisor_id = self.test_provisor_post()
+
         response = client.post(
             '/medicine',
             data=json.dumps({
@@ -121,10 +153,10 @@ class MyTest(unittest.TestCase):
                 "price": 300,
                 "amount": 6
             }).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()}
         )
         self.assertEqual(response.status_code, 201)
-
         json_token= response.data.decode('utf8').replace("'",'"')
         return json.loads(json_token).get('id') 
 
@@ -142,13 +174,18 @@ class MyTest(unittest.TestCase):
         response = client.get('/medicine')
         self.assertEqual(response.status_code, 200)
 
-        response = client.post('/medicine')
+        response = client.post('/medicine',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 400)
+
+        response = client.post('/medicine')
+        self.assertEqual(response.status_code, 401)
 
         response = client.post(
             '/medicine',
             data=json.dumps({}).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()}
         )
         self.assertEqual(response.status_code, 400)
         
@@ -165,23 +202,35 @@ class MyTest(unittest.TestCase):
                 "price": 300,
                 "amount": 6
             }).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()}
         )
         self.assertEqual(response.status_code, 200)
 
-        response = client.put('/medicine/1')
+        response = client.put('/medicine/'+medicine_id)
+        self.assertEqual(response.status_code, 401)
+
+        response = client.put('/medicine/1',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 400)
 
-        response = client.put('/medicine/7868d318-486c-11eb-acec-98fa9b4c4e6d')
+        response = client.put('/medicine/7868d318-486c-11eb-acec-98fa9b4c4e6d',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 404)
 
-        response = client.delete('/medicine/'+medicine_id)
+        response = client.delete('/medicine/'+medicine_id,
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 200)
 
         response = client.delete('/medicine/1')
+        self.assertEqual(response.status_code, 401)
+
+        response = client.delete('/medicine/1',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 400)
 
-        response = client.delete('/medicine/7868d318-486c-11eb-acec-98fa9b4c4e6d')
+        response = client.delete('/medicine/7868d318-486c-11eb-acec-98fa9b4c4e6d',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.comko:qwertyOpko'.encode()).decode()})
         self.assertEqual(response.status_code, 404)
 
     def test_buy_methods(self):
@@ -189,6 +238,18 @@ class MyTest(unittest.TestCase):
         client=app.test_client()
 
         medicine_id = self.test_medicine_post()
+        user_id = self.test_user_post()
+        response = client.post(
+            '/buy',
+            data=json.dumps({
+               "medicine_id": medicine_id,
+               "amount": 4
+            }).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 201)
+        
         response = client.post(
             '/buy',
             data=json.dumps({
@@ -197,22 +258,84 @@ class MyTest(unittest.TestCase):
             }).encode('utf-8'),
             headers={'Content-Type': 'application/json'}
         )
-        print(response.data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 401)
         
-        user_id = self.test_user_post()
-        medicine_id = self.test_medicine_post()
         response = client.post(
             '/buy',
-            data=json.dumps({
-               "user_id": user_id,
-               "medicine_id": medicine_id,
-               "amount": 4
-            }).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        response = client.post(
+            '/buy',
+            data=json.dumps({}).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
         )
         self.assertEqual(response.status_code, 400)
 
+        response = client.post(
+            '/buy',
+            data=json.dumps({
+               "medicine_id": "7868d318-486c-11eb-acec-98fa9b4c4e6d",
+               "amount": 4
+            }).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_demand_methods(self):
+
+        client=app.test_client()
+
+        medicine_id = self.test_medicine_post()
+        user_id = self.test_user_post()
+        response = client.post(
+            '/demand',
+            data=json.dumps({
+               "medicine_id": medicine_id,
+               "amount": 4
+            }).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 201)
+        
+        response = client.post(
+            '/demand',
+            data=json.dumps({
+               "medicine_id": medicine_id,
+               "amount": 4
+            }).encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+        self.assertEqual(response.status_code, 401)
+        
+        response = client.post(
+            '/demand',
+            headers={'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        response = client.post(
+            '/demand',
+            data=json.dumps({}).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 400)
+
+        response = client.post(
+            '/demand',
+            data=json.dumps({
+               "medicine_id": "7868d318-486c-11eb-acec-98fa9b4c4e6d",
+               "amount": 4
+            }).encode('utf-8'),
+            headers={'Content-Type': 'application/json',
+                         'Authorization': 'Basic ' + base64.b64encode('qwerty129@gmail.com:qwertyOp'.encode()).decode()}
+        )
+        self.assertEqual(response.status_code, 404)
 
 if __name__ == '__main__':
     unittest.main()
